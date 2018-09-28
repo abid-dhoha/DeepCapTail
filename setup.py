@@ -11,7 +11,7 @@ setup(
     entrypoints={
         'console_scripts':
             [
-                'train_save_models=code.train_save_model:main'
+                'train_save_models=code.train_model:main'
             ]
     }
 )

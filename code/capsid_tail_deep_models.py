@@ -4,7 +4,6 @@ number of nodes, and activation functions.
 """
 
 
-
 from keras.models import Sequential
 from keras.layers import Dense
 

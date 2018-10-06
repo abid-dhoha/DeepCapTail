@@ -36,7 +36,7 @@ def build_kmer_df_learn(lp_fasta, l_label=None):
         for p_fasta, label in zip(lp_fasta, l_label):
             l_seq_id = [record.id for record in parse(p_fasta, 'fasta')]
             s_label = concat([s_label, Series(label, name='label', index=l_seq_id)])
-            return df_data, s_label
+        return df_data, s_label
     else:
         return df_data
 

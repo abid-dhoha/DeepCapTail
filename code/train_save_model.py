@@ -49,7 +49,7 @@ def main():
 
     # serialize the model to JSON
     model_json = model.to_json()
-    with open('.'.join([args.p_output, 'model']), "w") as json_file:
+    with open('.'.join([args.p_output, 'json']), "w") as json_file:
         json_file.write(model_json)
 
     # serialize weights to HDF5

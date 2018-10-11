@@ -19,11 +19,10 @@ def train_model(df_data, s_label, model_name):
 
 def main():
     from code.build_kmer_df_learn import build_kmer_df_learn
-    from os.path import exists, join
+    from os.path import exists
     from os import makedirs
     from argparse import ArgumentParser
-    from sklearn.externals.joblib import dump
-    import pickle
+    from ntpath import split
 
     parser = ArgumentParser()
     parser.add_argument('--p_lp_fasta', '-p_lp_fasta', help='path of the file that has the list of paths of fasta'
@@ -39,22 +38,24 @@ def main():
         lp_fasta=[p_fasta for p_fasta in open(args.p_lp_fasta).read().splitlines()]
         , l_label=[int(label) for label in open(args.p_l_label).read().splitlines()]
     )
+
     # train capsid and tail models
     model = train_model(df_data, s_label, args.model_name)
-    # create the output directory if doesn't exist
-    #if exists(args.p_output):
-    #    makedirs(args.p_ouput)
-    # save the capsid and tail models
-    # pickle.dump(model, open(args.p_output, 'wb'))
 
-    # serialize model to JSON
+    # create the output directory if doesn't exist
+    p_directory, p_file = split(args.p_output)
+    if not exists(p_directory):
+        makedirs(p_directory)
+
+    # serialize the model to JSON
     model_json = model.to_json()
-    with open(args.p_output, "w") as json_file:
+    with open('.'.join([args.p_output, 'model']), "w") as json_file:
         json_file.write(model_json)
+
     # serialize weights to HDF5
     model.save_weights('.'.join([args.p_output, 'h5']))
-    print("Saved model to disk")
-    # https://machinelearningmastery.com/save-load-keras-deep-learning-models/
+    print("Model is saved.")
+    # code from https://machinelearningmastery.com/save-load-keras-deep-learning-models/
 
 
 if __name__ == '__main__':

@@ -4,7 +4,6 @@ use the capsid and tail models to predict aa sequences
 
 
 def predict_sequence(capsid_tail, df_data, p_model_json, p_model_h5):
-    from os.path import join
     from keras.models import model_from_json
     from pandas import DataFrame
 

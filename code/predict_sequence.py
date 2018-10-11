@@ -17,7 +17,10 @@ def predict_sequence(capsid_tail, df_data, p_model_json, p_model_h5):
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
     prediction = model.predict_proba(df_data)
 
-    return DataFrame({capsid_tail: [item[0] for item in prediction]})
+    return DataFrame(
+        {'_'.join([capsid_tail, 'predictions']): [item[0] for item in prediction]}
+        , index=df_data.index.values
+    )
 
 
 def main():
@@ -29,13 +32,13 @@ def main():
 
     parser = ArgumentParser()
     parser.add_argument('--p_fasta', '-p_fasta', help='path of fasta file of amino acid sequences to predict')
-    parser.add_argument('--capsid_tail', '-model_name', help='capsid or tail to predict either capsid or tail')
-    parser.add('p_output', 'p_output', help='path of the output file')
+    parser.add_argument('--capsid_tail', '-capsid_tail', help='capsid or tail to predict either capsid or tail')
+    parser.add_argument('--p_output', '-p_output', help='path of the output file')
 
     args = parser.parse_args()
 
     p_model_json = 'models/capsid.json' if args.capsid_tail == 'capsid' else 'models/tail.json'
-    p_model_h5 = 'models/tail.h5' if args.capsid_tail == 'capsid' else 'model/tail.h5'
+    p_model_h5 = 'models/capsid.h5' if args.capsid_tail == 'capsid' else 'model/tail.h5'
 
     df_data = build_kmer_df_learn(lp_fasta=[args.p_fasta])
 
@@ -44,7 +47,7 @@ def main():
     p_directory, p_file = split(args.p_output)
     if not exists(p_directory):
         makedirs(p_directory)
-    df_prediction.to_csv(args.p_output)
+    df_prediction.to_csv(args.p_output, index_label='ids')
 
 
 if __name__ == '__main__':

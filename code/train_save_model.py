@@ -4,7 +4,7 @@ This model codes for the capsid and tail model: train and save modules
 
 
 def train_model(df_data, s_label, model_name):
-    from code.capsid_tail_deep_models import capsid_model, tail_model
+    # from code.capsid_tail_deep_models import capsid_model, tail_model
     from numpy import size
 
     if model_name == 'capsid':
@@ -17,8 +17,96 @@ def train_model(df_data, s_label, model_name):
     return model
 
 
+def build_kmer_df_learn(lp_fasta, l_label=None):
+    from Bio.SeqIO import parse
+    from itertools import chain
+    from pandas import DataFrame, Series, concat
+
+    l_kmer_size = [1, 2, 3]
+    l_letter = ['M', 'F', 'L', 'I', 'V', 'P', 'T', 'A', 'Y', 'H', 'Q', 'N', 'K', 'D', 'E', 'C', 'R', 'S', 'W', 'G']
+    l_kmer = list(chain(*[generate_kmer(kmer_size, l_letter, l_letter) for kmer_size in l_kmer_size]))
+    l_l_kmer_freq = []
+    l_seq_id = []
+    for p_fasta in lp_fasta:
+        for record in parse(p_fasta, 'fasta'):
+            l_seq_id.append(record.id)
+            d_record = {}
+            seq = str(record.seq)
+            len_seq = len(seq)
+            for i in range(len_seq):
+                for kmer in [seq[i:i + kmer_size] for kmer_size in l_kmer_size if i <= len_seq - kmer_size]:
+                    d_record[kmer] = 1 if kmer not in d_record.keys() else d_record[kmer] + 1
+            l_kmer_freq = []
+            for kmer in l_kmer:
+                l_kmer_freq.append(d_record[kmer] if kmer in d_record.keys() else 0)
+            l_l_kmer_freq.append(l_kmer_freq)
+
+    df_data = DataFrame(l_l_kmer_freq, columns=l_kmer, index=l_seq_id)
+
+    if l_label:
+        s_label = Series(name='label')
+        for p_fasta, label in zip(lp_fasta, l_label):
+            l_seq_id = [record.id for record in parse(p_fasta, 'fasta')]
+            s_label = concat([s_label, Series(label, name='label', index=l_seq_id)])
+        return df_data, s_label
+    else:
+        return df_data
+
+
+def generate_kmer(kmer_size, l_kmer, l_letter):
+    if all(len(kmer) == kmer_size for kmer in l_kmer):
+        return l_kmer
+    return generate_kmer(kmer_size, [''.join([kmer, letter]) for letter in l_letter for kmer in l_kmer], l_letter)
+
+
+def capsid_model(nb_feature):
+    """
+    capsid model has the structure 400,200,100,50 nodes
+    :param nb_feature:
+    :return:
+    """
+    from keras.models import Sequential
+    from keras.layers import Dense
+
+
+    # construct the model
+    model = Sequential()
+    model.add(Dense(400, input_dim=nb_feature, activation='relu'))
+    model.add(Dense(200, activation='relu'))
+    model.add(Dense(100, activation='relu'))
+    model.add(Dense(50, activation='relu'))
+    model.add(Dense(1, activation='sigmoid'))
+
+    # compile and save the model
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+    return model
+
+
+def tail_model(nb_feature):
+    """
+    tail model has the structure 600,300,150,60 nodes
+    :param nb_feature:
+    :return:
+    """
+    from keras.models import Sequential
+    from keras.layers import Dense
+
+
+    # construct the model
+    model = Sequential()
+    model.add(Dense(600, input_dim=nb_feature, activation='relu'))
+    model.add(Dense(300, activation='relu'))
+    model.add(Dense(150, activation='relu'))
+    model.add(Dense(60, activation='relu'))
+    model.add(Dense(1, activation='sigmoid'))
+
+    # compile and save the model
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+    return model
+
+
 def main():
-    from code.build_kmer_df_learn import build_kmer_df_learn
+    # from code.build_kmer_df_learn import build_kmer_df_learn
     from os.path import exists
     from os import makedirs
     from argparse import ArgumentParser

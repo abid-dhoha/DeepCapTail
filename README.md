@@ -4,3 +4,8 @@ DeepCapTail is deep learning project predicts capsid and tail proteins of phage 
 # SYSTEM REQUIREMENTS
 This project should run on all Unix platform, although it was only testing linux (I need to give the version)
 
+# SOFTWARE REQUIREMENTS
+DeepCapTail requires the following packages:
+  1. Python- version 3.6 or later
+  2. Biopython - version or later
+  3.

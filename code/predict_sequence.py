@@ -31,9 +31,11 @@ def main():
     from ntpath import split
 
     parser = ArgumentParser()
-    parser.add_argument('--p_fasta', '-p_fasta', help='path of fasta file of amino acid sequences to predict')
-    parser.add_argument('--capsid_tail', '-capsid_tail', help='capsid or tail to predict either capsid or tail')
-    parser.add_argument('--p_output', '-p_output', help='path of the output file')
+    parser.add_argument('--p_fasta', '-p_fasta', help='path of fasta file of amino acid sequences that we want to'
+                                                      ' predict')
+    parser.add_argument('--capsid_tail', '-capsid_tail', help='"capsid" for capsid prediction and "tail" for tail '
+                                                              'prediction')
+    parser.add_argument('--p_output', '-p_output', help='path of the output file of the predictions')
 
     args = parser.parse_args()
 

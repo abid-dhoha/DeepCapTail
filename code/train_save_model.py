@@ -9,10 +9,10 @@ def train_model(df_data, s_label, model_name):
 
     if model_name == 'capsid':
         model = capsid_model(size(df_data, 1))
-        model.fit(df_data, s_label, epochs=150, batch_size=10, verbose=0)
+        model.fit(df_data, s_label, epochs=150, batch_size=10, verbose=1)
     else:
         model = tail_model(size(df_data, 1))
-        model.fit(df_data, s_label, epochs=150, batch_size=10, verbose=0)
+        model.fit(df_data, s_label, epochs=150, batch_size=10, verbose=1)
 
     return model
 
@@ -29,8 +29,7 @@ def main():
                                                             ' files that you intend to train')
     parser.add_argument('--p_l_label', '-p_l_label', help='path of the file that has the list of labels')
     parser.add_argument('--model_name', '-model_name', help='capsid or tail which is the name of the model')
-    parser.add_argument('--p_output', '-p_output', help='path of the output path where the constructed models '
-                                                        'will be stored')
+    parser.add_argument('--p_output', '-p_output', help='path of the output file where the built models will be stored')
 
     args = parser.parse_args()
     # build df_learn, which the learning matrix

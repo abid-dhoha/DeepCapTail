@@ -6,6 +6,17 @@ This project should run on all Unix platform, although it was only testing linux
 
 # SOFTWARE REQUIREMENTS
 DeepCapTail requires the following packages:
-  1. Python- version 3.6 or later
-  2. Biopython - version or later
-  3.
+1. Python- version 3.6 or later
+2. Biopython - version or later
+3. keras
+# TO PREDICT CAPSID OR TAIL
+1. Clone this repository
+2. % cd DeepCapTail/
+3. 
+# HELP
+% python predict_sequence.py --help
+
+# OUTPUT FILES
+
+
+

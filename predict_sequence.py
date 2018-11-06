@@ -22,6 +22,7 @@ def predict_sequence(capsid_tail, df_data, p_model_json, p_model_h5):
         , index=df_data.index.values
     )
 
+
 def build_kmer_df_learn(lp_fasta, l_label=None):
     from Bio.SeqIO import parse
     from itertools import chain
